@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Авторизация</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<form action="/infrastructure/HTTPhandler.php">
+			<div><input name="name" placeholder="Логин"></div>
+			<div><input name="pass" placeholder="Пароль"></div>
+			<div><input type="radio" value="log" name="type" id="radio1" checked><label for="radio1">Вход</label></div>
+			<div><input type="radio" value="reg" name="type" id="radio2"><label for="radio2">Регистрация</label></div>
+			<div style="display:none"><input type="radio" value="auth" name="request" checked></div>
+			<input type="submit" value="Поехали!">
+		</form>
+		<div>Логин/пароль не верны.</div>
+	</body>
+</html>

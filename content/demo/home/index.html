@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Главная</title>
+		<style>
+		*
+		{
+			font-size: 32pt;
+		}
+		input
+		{
+			font-size: 16pt;
+		}
+		button
+		{
+			font-size: 10pt;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="name">name</div>
+		<div>
+			<img id="avatar" src="/demo/infrastructure/HTTPhandler.php?request=getAvatar">
+			<img id="graph" src="/demo/infrastructure/HTTPhandler.php?request=visualiseStats">
+			<span style="position: absolute; top: 50px; left: 650px" id="stats"></span>
+		</div>
+		<form id="formAction" action="/demo/infrastructure/HTTPhandler.php?request=updateAvatar" method="post" enctype="multipart/form-data">
+			<div><input type="file" name="fileToUpload" id="fileToUpload"></div>
+			<div><input type="submit" value="Сменить аватарку (png)" name="submit"></div>
+		</form>
+		<div id="skins"></div>
+		<button style="font-size: 16pt" onclick="exit()">Выход</button>
+		<form id="hostForm" action="/demo/infrastructure/HTTPhandler.php?request=hostGame">
+				<div><input name="name_game" placeholder="Название"></div>
+				<div><input name="pass_game" placeholder="Пароль"></div>
+				<div style="display:none"><input type="radio" value="30" name="turnTime_game" checked></div>
+				<div><input name="width_game" placeholder="Ширина поля"></div>
+				<div><input name="height_game" placeholder="Высота поля"></div>
+				<div><input name="length_game" placeholder="Длина победной линии"></div>
+				<div style="display:none"><input type="radio" value="hostGame" name="request" checked></div>
+				<div style="display:none"><input id="hostUser" type="radio" name="namePlayerOne_user" checked></div>
+				<input type="submit" value="Создать игру">
+		</form>
+		<form id="joinForm" action="/demo/infrastructure/HTTPhandler.php?request=joinGame">
+			<div><input name="name_game" placeholder="Название"></div>
+			<div><input name="pass_game" placeholder="Пароль"></div>
+			<div style="display:none"><input type="radio" value="joinGame" name="request" checked></div>
+			<div style="display:none"><input id="joinUser" type="radio" name="namePlayerTwo_user" checked></div>
+			<input type="submit" value="Присоединиться к игре">
+		</form>
+	</body>
+	<script type="text/javascript" src="script.js"></script>
+</html>
