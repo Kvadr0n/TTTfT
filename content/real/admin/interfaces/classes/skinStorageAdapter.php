@@ -1,6 +1,6 @@
 <?php
-require_once "/var/www/html/admin/entities/interfaces/skinStorage.php";
-require_once "/var/www/html/admin/interfaces/classes/databaseAccess.php";
+require_once "/var/www/html/real/admin/entities/interfaces/skinStorage.php";
+require_once "/var/www/html/real/admin/interfaces/classes/databaseAccess.php";
 
 class SkinStorageAdapter implements SkinStorage
 {
@@ -8,7 +8,7 @@ class SkinStorageAdapter implements SkinStorage
 
 	public function __construct($query)
 	{
-		$databaseAccess = $query["databaseAccess"];
+		$this->databaseAccess = $query["databaseAccess"];
 	}
 	
 	public function create($query)
@@ -18,7 +18,7 @@ class SkinStorageAdapter implements SkinStorage
 	
 	public function read($query)
 	{
-		die;
+		return($this->databaseAccess->connection->query("SELECT * FROM Skins"));
 	}
 	
 	public function update($query)
@@ -28,7 +28,7 @@ class SkinStorageAdapter implements SkinStorage
 	
 	public function delete($query)
 	{
-		die;
+		return($this->databaseAccess->connection->query("SELECT * FROM Skins WHERE id_skin=$query"));
 	}
 }
 ?>

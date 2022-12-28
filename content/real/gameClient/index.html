@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Игра</title>
+		<style>
+		*
+		{
+			font-size: 32pt;
+		}
+		input
+		{
+			font-size: 16pt;
+		}
+		button
+		{
+			font-size: 10pt;
+		}
+		td
+		{
+			width: 55px;
+			height: 60px;
+			border: 3px solid rgb(195, 195, 195);
+		}
+		table
+		{
+			border-collapse: collapse;
+		}
+		#field
+		{
+			position: absolute;
+			left: 400px;
+			top: 55px;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="name">name</div>
+		<div>
+			<img id="avatar" src="/real/infrastructure/HTTPhandler.php?request=getAvatar">
+		</div>
+		<img src="/logo.png">
+		<div id="nameEnemy">Противник</div>
+		<div>
+			<img id="avatarEnemy" src="/real/infrastructure/HTTPhandler.php?request=getAvatar&name_user=костыль">
+		</div>
+		<div id="field"></div>
+	</body>
+	<script type="text/javascript" src="script.js"></script>
+</html>

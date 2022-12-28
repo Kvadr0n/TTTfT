@@ -50,6 +50,12 @@ updateGame.onload = function()
 				}
 				setTimeout(() => window.location.replace("/demo/home/?name_user=" + params.get('name_user')), 5000);
 			}
+			else
+			if (field.innerHTML.substring(5, 11) == "Ничья!")
+			{
+				clearInterval(timer);
+				setTimeout(() => window.location.replace("/demo/home/?name_user=" + params.get('name_user')), 5000);
+			}
 		}
 	}
 	this.open("GET", '/demo/infrastructure/HTTPhandler.php?name_game='+ params.get('name_game') + '&pass_game=' + params.get('pass_game') + '&request=updateGame&status=waiting');

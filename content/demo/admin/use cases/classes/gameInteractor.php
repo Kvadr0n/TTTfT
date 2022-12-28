@@ -80,6 +80,18 @@ class GameInteractor
 				$width = $game["width_game"];
 				$height = $game["height_game"];
 				$isPlayerOneTurn = boolval($game["isPlayerOneTurn_game"]);
+				$draw = true;
+				foreach (str_split($state) as $char)
+				{
+					if ($char == '0')
+					{
+						$draw = false;
+						break;
+					}
+				}
+				if ($draw)
+					echo "<div>Ничья!</div>";
+				else
 				if ($game["nameWinner_user"] == $game["namePlayerOne_user"])
 				{
 					echo "<div>Победил {$game["namePlayerOne_user"]}!</div>";
@@ -138,6 +150,18 @@ class GameInteractor
 				$width = $game["width_game"];
 				$height = $game["height_game"];
 				$isPlayerOneTurn = boolval($game["isPlayerOneTurn_game"]);
+				$draw = true;
+				foreach (str_split($state) as $char)
+				{
+					if ($char == '0')
+					{
+						$draw = false;
+						break;
+					}
+				}
+				if ($draw)
+					echo "<div>Ничья!</div>";
+				else
 				if ($game["nameWinner_user"] == $game["namePlayerOne_user"])
 				{
 					echo "<div>Победил {$game["namePlayerOne_user"]}!</div>";
@@ -250,7 +274,7 @@ class GameInteractor
 					$icheck = $i - $dist;
 					$jcheck = $width - 1;
 				}
-				while (($icheck < $height) && ($jcheck < $width))
+				while (($icheck < $height) && ($jcheck >= 0))
 				{
 					if (getTile($state, $width, $height, $icheck, $jcheck) == "1")
 					{
@@ -373,7 +397,7 @@ class GameInteractor
 					$icheck = $i - $dist;
 					$jcheck = $width - 1;
 				}
-				while (($icheck < $height) && ($jcheck < $width))
+				while (($icheck < $height) && ($jcheck >= 0))
 				{
 					if (getTile($state, $width, $height, $icheck, $jcheck) == "2")
 					{

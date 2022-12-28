@@ -1,6 +1,6 @@
 <?php
-require_once "/var/www/html/admin/entities/interfaces/userStorage.php";
-require_once "/var/www/html/admin/interfaces/classes/databaseAccess.php";
+require_once "/var/www/html/real/admin/entities/interfaces/userStorage.php";
+require_once "/var/www/html/real/admin/interfaces/classes/databaseAccess.php";
 
 class DBUserAdapter implements UserStorage
 {
@@ -13,8 +13,7 @@ class DBUserAdapter implements UserStorage
 
 	public function create($query)
 	{
-		$res = $this->databaseAccess->connection->query("SELECT id_user FROM Users WHERE name_user = '{$query["name"]}'");
-		if ($res->num_rows > 0)
+		if ($this->databaseAccess->connection->query("SELECT id_user FROM Users WHERE name_user = '{$query["name"]}'")->num_rows > 0)
 			return(false);
 		$this->databaseAccess->connection->query("INSERT INTO Users (name_user, pass_user) 
 												  VALUES ('{$query["name"]}', '{$query["pass"]}')");
@@ -23,17 +22,17 @@ class DBUserAdapter implements UserStorage
 	
 	public function read($query)
 	{
-		die;
+		return($this->databaseAccess->connection->query("SELECT id_user FROM Users WHERE name_user = '{$query["name"]}' AND pass_user = '{$query["pass"]}'"));
 	}
 	
 	public function update($query)
 	{
-		die;
+		$this->databaseAccess->connection->query("UPDATE Users SET id_skin={$query["id_skin"]}, wins_user={$query["wins_user"]}, loses_user={$query["loses_user"]} WHERE id_user={$query["id_user"]}");
 	}
 	
 	public function delete($query)
 	{
-		die;
+		return($this->databaseAccess->connection->query("SELECT * FROM Users WHERE name_user = '{$query}'"));;
 	}
 }
 ?>

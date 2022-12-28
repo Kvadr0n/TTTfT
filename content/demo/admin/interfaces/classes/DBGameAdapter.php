@@ -18,10 +18,7 @@ class DBGameAdapter implements GameStorage
 			($query["height_game"] > 0)   && ($query["height_game"] <= 10)   &&
 			($query["length_game"] > 0)   && ($query["length_game"] <= 10))
 		{
-			echo "
-			INSERT INTO Games (name_game, pass_game, turnTime_game, width_game, height_game, length_game, namePlayerOne_user)
-			VALUES ('{$query["name_game"]}', '{$query["pass_game"]}', {$query["turnTime_game"]}, {$query["width_game"]}, {$query["height_game"]}, {$query["length_game"]}, '{$query["namePlayerOne_user"]}')
-			";
+			$this->databaseAccess->connection->query("DELETE FROM Games WHERE name_game = '{$query["name_game"]}'");
 			$this->databaseAccess->connection->query
 			("
 			INSERT INTO Games (name_game, pass_game, turnTime_game, width_game, height_game, length_game, namePlayerOne_user)

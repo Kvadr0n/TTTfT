@@ -1,6 +1,8 @@
 <?php
-require_once "/var/www/html/admin/use cases/classes/userInteractor.php";
-require_once "/var/www/html/admin/use cases/classes/gameInteractor.php";
+require_once "/var/www/html/real/admin/use cases/classes/userInteractor.php";
+require_once "/var/www/html/real/admin/use cases/classes/gameInteractor.php";
+require_once('/var/www/filesystem/jpgraph/src/jpgraph.php');
+require_once('/var/www/filesystem/jpgraph/src/jpgraph_pie.php');
 
 class Controller
 {
@@ -15,17 +17,96 @@ class Controller
 	
 	public function hostGame($query)
 	{
-		die;
+		$res = $this->gameInteractor->hostGame($query);
+		if ($res)
+		{
+			$_SESSION["name_user"] = $query["namePlayerOne_user"];
+			$_SESSION["name_game"] = $query["name_game"];
+			$_SESSION["pass_game"] = $query["pass_game"];
+			header("location: /real/gameHost");
+		}
+		else
+		{
+			$_SESSION["name_user"] = $query["namePlayerOne_user"];
+			header("location: /real/homeHostFail");
+		}
 	}
 	
 	public function startGame($query)
 	{
-		die;
+		$res = $this->gameInteractor->startGame($query);
+		if ($res)
+		{
+			$_SESSION["name_user"] = $query["namePlayerTwo_user"];
+			$_SESSION["name_game"] = $query["name_game"];
+			$_SESSION["pass_game"] = $query["pass_game"];
+			header("location: /real/gameClient");
+		}
+		else
+		{
+			$_SESSION["name_user"] = $query["namePlayerTwo_user"];
+			header("location: /real/homeJoinFail");
+		}
 	}
 	
 	public function updateGame($query)
 	{
-		die;
+		switch ($query["status"])
+		{
+			case "player1":
+			{
+				$query["size"] = "name";
+				$query["name_user"] = $query["namePlayerOne_user"];
+				$skin1 = $this->userInteractor->getSkin($query);
+				$query["name_skin1"] = $skin1;
+				$query["name_user"] = $query["namePlayerTwo_user"];
+				$skin2 = $this->userInteractor->getSkin($query);
+				$query["name_skin2"] = $skin2;
+				$this->gameInteractor->updateGame($query);
+				break;
+			}
+			case "player2":
+			{
+				$query["size"] = "name";
+				$query["name_user"] = $query["namePlayerOne_user"];
+				$skin1 = $this->userInteractor->getSkin($query);
+				$query["name_skin1"] = $skin1;
+				$query["name_user"] = $query["namePlayerTwo_user"];
+				$skin2 = $this->userInteractor->getSkin($query);
+				$query["name_skin2"] = $skin2;
+				$this->gameInteractor->updateGame($query);
+				break;
+			}
+			case "turn1":
+			{
+				$query["size"] = "name";
+				$query["name_user"] = $query["namePlayerOne_user"];
+				$skin1 = $this->userInteractor->getSkin($query);
+				$query["name_skin1"] = $skin1;
+				$query["name_user"] = $query["namePlayerTwo_user"];
+				$skin2 = $this->userInteractor->getSkin($query);
+				$query["name_skin2"] = $skin2;
+				$this->gameInteractor->updateGame($query);
+				break;
+			}
+			case "turn2":
+			{
+				$query["size"] = "name";
+				$query["name_user"] = $query["namePlayerOne_user"];
+				$skin1 = $this->userInteractor->getSkin($query);
+				$query["name_skin1"] = $skin1;
+				$query["name_user"] = $query["namePlayerTwo_user"];
+				$skin2 = $this->userInteractor->getSkin($query);
+				$query["name_skin2"] = $skin2;
+				$this->gameInteractor->updateGame($query);
+				break;
+			}
+			default:
+			{
+				$res = $this->gameInteractor->updateGame($query);
+				echo $res;
+			}
+		}
 	}
 	
 	public function endGame($query)
@@ -37,57 +118,188 @@ class Controller
 	{
 		if ($this->userInteractor->registerUser($query))
 		{
-			setcookie("logged", $query["name"], time() + 600, '/');
-			header("location: /home");
+			$_SESSION["name_user"] = $query["name"];
+			header("location: /real/home");
 			exit;
 		}
-		header("location: /authorizationExists");
+		header("location: /real/authorizationExists");
 		exit;
 	}
 	
 	public function loginUser($query)
 	{
-		die;
+		if ($this->userInteractor->loginUser($query)->num_rows > 0)
+		{
+			$_SESSION["name_user"] = $query["name"];
+			header("location: /real/home");
+			exit;
+		}
+		header("location: /real/authorizationRetry");
+		exit;
 	}
 	
 	public function getAvatar($query)
 	{
-		die;
+		$this->userInteractor->getAvatar($query);
 	}
 	
 	public function updateAvatar($query)
 	{
-		die;
+		if ($this->userInteractor->updateAvatar($query))
+		{
+			$_SESSION["name_user"] = $query;
+			$_SESSION["avatarFailure"] = "no";
+			header("location: /real/home");
+			return;
+		}
+		$_SESSION["name_user"] = $query;
+		$_SESSION["avatarFailure"] = "yes";
+		header("location: /real/home");			
 	}
 	
 	public function showSkins($query)
 	{
-		die;
+		$res = $this->userInteractor->showSkins($query);
+		$user = $res["user"];
+		$skins = $res["skins"];
+		$selected = 0;
+		$wins = 0;
+		$loses = 0;
+		$percentage = 0;
+		foreach ($user as $it)
+		{
+			$wins = $it["wins_user"];
+			$loses = $it["loses_user"];
+			$selected = $it["id_skin"];
+			$percentage = $wins + $loses == 0 ? 0 : intval($wins / ($wins + $loses) * 100);
+		}
+		echo "<div>";
+		foreach ($skins as $skin)
+		{
+			echo "<img src='/real/infrastructure/HTTPhandler.php?request=getSkin&name={$skin["name_skin"]}&size=full&lock=";
+			switch ($skin["conditionType_skin"])
+			{
+				case 'wins':
+				{
+					if ($selected == $skin["id_skin"])
+						echo "tick'>";
+					else if ($wins >= $skin["conditionNumber_skin"])
+						echo "no'>";
+					else
+						echo "yes'>";
+					break;
+				}
+				case 'loses':
+				{
+					if ($selected == $skin["id_skin"])
+						echo "tick'>";
+					else if ($loses >= $skin["conditionNumber_skin"])
+						echo "no'>";
+					else
+						echo "yes'>";
+					break;
+				}
+				case 'percentage':
+				{
+					if ($selected == $skin["id_skin"])
+						echo "tick'>";
+					else if ($percentage >= $skin["conditionNumber_skin"])
+						echo "no'>";
+					else
+						echo "yes'>";
+					break;
+				}
+			}
+		}
+		echo "</div>";
+		echo "<div>";
+		foreach ($skins as $skin)
+		{
+			echo "<button style='width: 108px'";
+			switch ($skin["conditionType_skin"])
+			{
+				case 'wins':
+				{
+					if ($selected == $skin["id_skin"])
+						echo ">Выбрано</button>";
+					else if ($wins >= $skin["conditionNumber_skin"])
+						echo "onclick=updateSkin({$skin["id_skin"]})>Выбрать</button>";
+					else
+						echo ">{$skin["conditionNumber_skin"]} побед</button>";
+					break;
+				}
+				case 'loses':
+				{
+					if ($selected == $skin["id_skin"])
+						echo ">Выбрано</button>";
+					else if ($loses >= $skin["conditionNumber_skin"])
+						echo "onclick=updateSkin({$skin["id_skin"]})>Выбрать</button>";
+					else
+						echo ">{$skin["conditionNumber_skin"]} поражений</button>";
+					break;
+				}
+				case 'percentage':
+				{
+					if ($selected == $skin["id_skin"])
+						echo ">Выбрано</button>";
+					else if ($percentage >= $skin["conditionNumber_skin"])
+						echo "onclick=updateSkin({$skin["id_skin"]})>Выбрать</button>";
+					else
+						echo ">{$skin["conditionNumber_skin"]} процентов</button>";
+					break;
+				}
+			}
+		}
+		echo "</div>";
 	}
 	
 	public function getSkin($query)
 	{
-		die;
+		$this->userInteractor->getSkin($query);
 	}
 	
 	public function updateSkin($query)
 	{
-		die;
+		$this->userInteractor->updateSkin($query);
 	}
 	
 	public function showStats($query)
 	{
-		die;
+		$user = $this->userInteractor->showStats($query);
+		$wins = $user["wins_user"];
+		$loses = $user["loses_user"];
+		$percentage = $wins + $loses == 0 ? 0 : intval($wins / ($wins + $loses) * 100);
+		echo "<div><div>Побед: $wins</div><div>Поражений: $loses</div><div>Процент: $percentage%</div></div>";
 	}
 	
 	public function visualiseStats($query)
 	{
-		die;
+		$user = $this->userInteractor->visualiseStats($query);
+		$user["loses_user"] = $user["wins_user"] + $user["loses_user"] == 0 ? 1 : $user["loses_user"];
+		$data = [$user["wins_user"], $user["loses_user"]];
+		$graph = new PieGraph(300,300);
+		$theme_class="DefaultTheme";
+		$graph->title->Set("");
+		$graph->SetBox(true);
+		$p1 = new PiePlot($data);
+		$graph->Add($p1);
+		$p1->ShowBorder();
+		$p1->SetColor('black');
+		$graph->legend->SetFrameWeight(1);
+		$graph->legend->SetColumns(6);
+		$p1->SetSliceColors(array('#00FF00','#FF0000'));
+
+		$graph->Stroke("/var/www/filesystem/tmp/{$query["name_user"]}Graph.png");
+		$image = imagecreatefrompng("/var/www/filesystem/tmp/{$query["name_user"]}Graph.png");
+		header('Content-type: image/png');
+		imagepng($image);
+		imagedestroy($image);
+		unlink("/var/www/filesystem/tmp/{$query["name_user"]}Graph.png");
 	}
 	
 	public function updateStats($query)
 	{
-		die;
+		$this->userInteractor->updateStats($query);
 	}
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-require_once "/var/www/html/admin/entities/classes/conditionType.php";
+require_once "/var/www/html/real/admin/entities/classes/conditionType.php";
 
 class Skin
 {

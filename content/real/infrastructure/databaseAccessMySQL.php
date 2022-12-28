@@ -1,5 +1,5 @@
 <?php
-require_once "/var/www/html/admin/interfaces/classes/databaseAccess.php";
+require_once "/var/www/html/real/admin/interfaces/classes/databaseAccess.php";
 
 class DatabaseAccessMySQL extends DatabaseAccess
 {

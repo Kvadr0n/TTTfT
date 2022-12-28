@@ -1,6 +1,6 @@
 <?php
-require_once "/var/www/html/admin/entities/interfaces/gameStorage.php";
-require_once "/var/www/html/admin/interfaces/classes/databaseAccess.php";
+require_once "/var/www/html/real/admin/entities/interfaces/gameStorage.php";
+require_once "/var/www/html/real/admin/interfaces/classes/databaseAccess.php";
 
 class DBGameAdapter implements GameStorage
 {
@@ -8,27 +8,41 @@ class DBGameAdapter implements GameStorage
 	
 	public function __construct($query)
 	{
-		$databaseAccess = $query["databaseAccess"];
+		$this->databaseAccess = $query["databaseAccess"];
 	}
 	
 	public function create($query)
 	{
-		die;
+		if (($query["turnTime_game"] > 0) && ($query["turnTime_game"] <= 60) &&
+			($query["width_game"] > 0)    && ($query["width_game"] <= 10)    &&
+			($query["height_game"] > 0)   && ($query["height_game"] <= 10)   &&
+			($query["length_game"] > 0)   && ($query["length_game"] <= 10))
+		{
+			$this->databaseAccess->connection->query("DELETE FROM Games WHERE name_game = '{$query["name_game"]}'");
+			$this->databaseAccess->connection->query
+			("
+			INSERT INTO Games (name_game, pass_game, turnTime_game, width_game, height_game, length_game, namePlayerOne_user)
+			VALUES ('{$query["name_game"]}', '{$query["pass_game"]}', {$query["turnTime_game"]}, {$query["width_game"]}, {$query["height_game"]}, {$query["length_game"]}, '{$query["namePlayerOne_user"]}')
+			");
+			echo "{$this->databaseAccess->connection->error}";
+			return(true);
+		}
+		return(false);
 	}
-	
+
 	public function read($query)
 	{
-		die;
+		return($this->databaseAccess->connection->query("SELECT * FROM Games WHERE name_game='{$query["name_game"]}' AND pass_game='{$query["pass_game"]}'"));
 	}
 	
 	public function update($query)
 	{
-		die;
+		$this->databaseAccess->connection->query("UPDATE Games SET namePlayerTwo_user='{$query["namePlayerTwo_user"]}', state_game='{$query["state_game"]}', isPlayerOneTurn_game={$query["isPlayerOneTurn_game"]}, nameWinner_user='{$query["nameWinner_user"]}' WHERE name_game='{$query["name_game"]}'");
 	}
 	
 	public function delete($query)
 	{
-		die;
+		$this->databaseAccess->connection->query("DELETE FROM Games WHERE namePlayerOne_user='{$query["namePlayerOne_user"]}'");
 	}
 }
 ?>

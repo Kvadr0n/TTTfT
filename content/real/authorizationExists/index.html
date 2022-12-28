@@ -2,10 +2,16 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Авторизация</title>
-		<link rel="stylesheet" type="text/css" href="style.css">
+		<style>
+		*
+		{
+			font-size: 32pt;
+		}
+		</style>
 	</head>
 	<body>
-		<form action="/infrastructure/HTTPhandler.php">
+		<img src="/logo.png">
+		<form action="/real/infrastructure/HTTPhandler.php">
 			<div><input name="name" placeholder="Логин"></div>
 			<div><input name="pass" placeholder="Пароль"></div>
 			<div><input type="radio" value="log" name="type" id="radio1" checked><label for="radio1">Вход</label></div>

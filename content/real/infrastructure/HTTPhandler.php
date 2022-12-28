@@ -1,10 +1,10 @@
 <?php
-require_once "/var/www/html/admin/interfaces/classes/controller.php";
-require_once "/var/www/html/infrastructure/databaseAccessMySQL.php";
-require_once "/var/www/html/admin/interfaces/classes/DBUserAdapter.php";
-require_once "/var/www/html/admin/interfaces/classes/DBGameAdapter.php";
-require_once "/var/www/html/admin/interfaces/classes/skinStorageAdapter.php";
-require_once "/var/www/html/admin/interfaces/classes/avatarStorageAdapter.php";
+require_once "/var/www/html/real/admin/interfaces/classes/controller.php";
+require_once "/var/www/html/real/infrastructure/databaseAccessMySQL.php";
+require_once "/var/www/html/real/admin/interfaces/classes/DBUserAdapter.php";
+require_once "/var/www/html/real/admin/interfaces/classes/DBGameAdapter.php";
+require_once "/var/www/html/real/admin/interfaces/classes/skinStorageAdapter.php";
+require_once "/var/www/html/real/admin/interfaces/classes/avatarStorageAdapter.php";
 
 class HTTPHandler
 {
@@ -27,12 +27,79 @@ class HTTPHandler
 					$this->appController->loginUser(["name" => $_GET["name"], "pass" => $_GET["pass"]]);
 				exit;
 			}
+			case "getAvatar":
+			{
+				$this->appController->getAvatar(!isset($_GET["name_user"]) ? "default" : $_GET["name_user"]);
+				exit;
+			}
+			case "updateAvatar":
+			{
+				$this->appController->updateAvatar($_GET["name_user"]);
+				exit;
+			}
+			case "showSkins":
+			{
+				$this->appController->showSkins($_GET["name_user"]);
+				exit;
+			}
+			case "getSkin":
+			{
+				$this->appController->getSkin($_GET);
+				exit;
+			}
+			case "updateSkin":
+			{
+				$this->appController->updateSkin($_GET);
+				exit;
+			}
+			case "showStats":
+			{
+				$this->appController->showStats($_GET);
+				exit;
+			}
+			case "visualiseStats":
+			{
+				$this->appController->visualiseStats($_GET);
+				exit;
+			}
+			case "updateStats":
+			{
+				$this->appController->updateStats($_GET);
+				exit;
+			}
+			case "hostGame":
+			{
+				$this->appController->hostGame($_GET);
+				exit;
+			}
+			case "joinGame":
+			{
+				$this->appController->startGame($_GET);
+				exit;
+			}
+			case "updateGame":
+			{
+				$this->appController->updateGame($_GET);
+				exit;
+			}
+			case '$_SESSION':
+			{
+				echo json_encode($_SESSION);
+				exit;
+			}
 		}
 	}
 	
 	public function handlePOST()
 	{
-		die;
+		switch ($_GET["request"])
+		{
+			case "updateAvatar":
+			{
+				$this->appController->updateAvatar($_GET["name_user"]);
+				exit;
+			}
+		}
 	}
 }
 
@@ -63,6 +130,10 @@ $handler = new HTTPHandler
 		])
 	])
 ]);
+
+session_start();
+$_GET = array_merge($_SESSION, $_GET);
+$_POST = array_merge($_SESSION, $_POST);
 
 if ($_SERVER['REQUEST_METHOD'] == "GET")
 	$handler->handleGET();
